@@ -61,5 +61,23 @@ function show(f){
 document.getElementById('feature').textContent=f+' selected. Online services need to be connected next.';
 }
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCQ2OYGMyaTMj96SNln-3mGunKjTmoGDM0",
+    authDomain: "royvo-live-d37de.firebaseapp.com",
+    projectId: "royvo-live-d37de",
+    storageBucket: "royvo-live-d37de.firebasestorage.app",
+    messagingSenderId: "828251158722",
+    appId: "1:828251158722:web:c6605c8ce17dddee04635b",
+    measurementId: "G-LJVY4JLJNS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+</script>
+  
 </body>
 </html>
