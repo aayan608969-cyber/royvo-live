@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,89 +7,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ROYVO LIVE</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101018;color:white;font-family:Arial,sans-serif}
-header{padding:20px;background:#191923;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
-h2{margin:0;color:#ff3d8b}
-button{background:#ff3d8b;color:white;border:0;border-radius:10px;padding:12px;cursor:pointer}
-nav{display:flex;justify-content:space-around;padding:15px;background:#191923;position:fixed;bottom:0;width:100%}
-nav button{background:transparent;padding:8px;font-size:13px}
-main{padding:16px;padding-bottom:90px}
-.story{display:flex;gap:15px;overflow:auto;margin-bottom:22px}
-.circle{min-width:60px;height:60px;border:3px solid #ff3d8b;border-radius:50%;display:grid;place-items:center}
-.card{background:#20202c;border-radius:16px;padding:15px;margin:15px 0}
-.video{height:260px;background:linear-gradient(140deg,#392047,#111827,#a62b68);border-radius:12px;display:grid;place-items:center;font-size:48px}
-input{max-width:100%}
-.small{color:#bbb;font-size:14px}
+body{margin:0;background:#101020;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:24px;background:#20183b}
+h1{color:#c4b5fd}
+main{max-width:500px;margin:auto;padding:16px}
+.card{background:#211f3b;padding:18px;margin:14px 0;border-radius:15px}
+input{box-sizing:border-box;width:100%;padding:12px;margin:7px 0;border-radius:8px;border:0}
+button{padding:13px;margin:5px;border:0;border-radius:9px;background:#8b5cf6;color:white;font-weight:bold}
+.wide{width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid button{min-height:65px}
 </style>
 </head>
 <body>
 <header>
-<h2>ROYVO LIVE</h2>
-<button onclick="document.getElementById('upload').click()">＋ Create</button>
-<input id="upload" type="file" accept="image/*,video/*,audio/*" hidden onchange="addPost(this)">
+<h1>ROYVO LIVE</h1>
+<p>Connect • Chat • Go Live</p>
 </header>
 <main>
-<h3>Discover creators</h3>
-<div class="story">
-<div><div class="circle">👤</div><p class="small">Your story</p></div>
-<div><div class="circle">🎤</div><p class="small">Music</p></div>
-<div><div class="circle">🎬</div><p class="small">Videos</p></div>
-<div><div class="circle">🔴</div><p class="small">Live</p></div>
+<section class="card">
+<h2>Create Your Profile</h2>
+<input id="name" placeholder="Your name">
+<input id="email" type="email" placeholder="Your email">
+<button class="wide" onclick="signup()">Continue</button>
+<p id="status">Welcome to ROYVO LIVE!</p>
+</section>
+<section class="card">
+<h2>Your Profile</h2>
+<p id="profile">Guest</p>
+</section>
+<section class="card">
+<h2>Explore</h2>
+<div class="grid">
+<button onclick="show('Live Video')">📹 Live Video</button>
+<button onclick="show('Video Call')">🤳 Video Call</button>
+<button onclick="show('Audio Call')">🎙️ Audio Call</button>
+<button onclick="show('Chat')">💬 Chat</button>
+<button onclick="show('Gifts')">🎁 Gifts</button>
+<button onclick="show('Coins')">🪙 Coins</button>
 </div>
-<h3>Your feed</h3>
-<div id="feed">
-<div class="card">
-<strong>ROYVO LIVE</strong>
-<p class="small">Welcome to your new community!</p>
-<div class="video">▶</div>
-<p>Connect, create and share.</p>
-<button onclick="like(this)">♡ Like 0</button>
-<button onclick="alert('Comments feature coming soon!')">Comment</button>
-</div>
-</div>
+<p id="feature">Choose a feature above.</p>
+</section>
 </main>
-<nav>
-<button onclick="window.scrollTo(0,0)">⌂ Home</button>
-<button onclick="alert('Search feature coming soon!')">⌕ Search</button>
-<button onclick="document.getElementById('upload').click()">＋ Create</button>
-<button onclick="alert('Live streaming feature coming soon!')">🔴 Live</button>
-<button onclick="alert('Profile feature coming soon!')">👤 Profile</button>
-</nav>
 <script>
-function like(btn){
-let n=Number(btn.dataset.likes||0);
-n++;
-btn.dataset.likes=n;
-btn.textContent='♥ Like '+n;
+function signup(){
+let n=document.getElementById('name').value.trim();
+let e=document.getElementById('email').value.trim();
+if(!n||!e){document.getElementById('status').textContent='Enter your name and email.';return;}
+document.getElementById('profile').textContent=n;
+document.getElementById('status').textContent='Demo profile created. Real login is not connected yet.';
 }
-function addPost(input){
-const file=input.files[0];
-if(!file)return;
-const url=URL.createObjectURL(file);
-const card=document.createElement('div');
-card.className='card';
-const media=file.type.startsWith('video/')
-?document.createElement('video')
-:file.type.startsWith('audio/')
-?document.createElement('audio')
-:document.createElement('img');
-media.src=url;
-media.controls=true;
-media.style.width='100%';
-media.style.maxHeight='350px';
-media.style.borderRadius='12px';
-card.innerHTML='<strong>Your new post</strong><p class="small"></p>';
-card.querySelector('p').textContent=file.name;
-card.appendChild(media);
-const btn=document.createElement('button');
-btn.textContent='♡ Like 0';
-btn.onclick=()=>like(btn);
-card.appendChild(btn);
-document.getElementById('feed').prepend(card);
-input.value='';
+function show(f){
+document.getElementById('feature').textContent=f+' selected. Online services need to be connected next.';
 }
 </script>
 </body>
-  </html>
-  
+</html>
