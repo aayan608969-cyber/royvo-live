@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101020">
 <title>ROYVO LIVE</title>
 
 <style>
@@ -20,6 +21,13 @@ header {
   text-align: center;
   padding: 22px;
   background: #20183b;
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 20px;
 }
 
 h1 { color: #c4b5fd; }
@@ -82,6 +90,10 @@ video {
 <body>
 
 <header>
+  <img class="logo"
+       src="royvo-logo.png"
+       alt="ROYVO LIVE Logo"
+       onerror="this.style.display='none'">
   <h1>ROYVO LIVE</h1>
   <p>Connect • Chat • Go Live</p>
 </header>
@@ -114,9 +126,7 @@ video {
     <button data-feature="Coins">🪙 Coins</button>
   </div>
 
-  <div id="feature">
-    Choose a feature above.
-  </div>
+  <div id="feature">Choose a feature above.</div>
 </section>
 
 </main>
@@ -127,8 +137,7 @@ import { initializeApp }
 
 import {
   getAuth,
-  onAuthStateChanged,
-  signInAnonymously
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -143,7 +152,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
 const $ = id => document.getElementById(id);
 
 let cameraStream = null;
@@ -170,26 +178,23 @@ $("profileBtn").addEventListener("click", () => {
 
 document.querySelectorAll("[data-feature]").forEach(button => {
   button.addEventListener("click", async () => {
-    const feature = button.dataset.feature;
-
     await stopCamera();
+    const feature = button.dataset.feature;
 
     if (feature === "Live Video") {
       $("feature").innerHTML = `
         <h3>📹 ROYVO LIVE Studio</h3>
         <video id="livePreview" autoplay muted playsinline></video>
-        <p id="cameraStatus">Waiting for camera permission...</p>
+        <p id="cameraStatus">Requesting camera permission...</p>
         <button id="stopCamera">⏹ Stop Camera</button>
-        <p>Preview only: public streaming is not connected yet.</p>
+        <p>Camera preview only. Public live streaming is not connected yet.</p>
       `;
 
       $("stopCamera").addEventListener("click", stopCamera);
 
       try {
         if (!navigator.mediaDevices?.getUserMedia) {
-          throw new Error(
-            "Camera needs HTTPS. Open the published website."
-          );
+          throw new Error("Open the website using HTTPS.");
         }
 
         cameraStream = await navigator.mediaDevices.getUserMedia({
@@ -202,20 +207,18 @@ document.querySelectorAll("[data-feature]").forEach(button => {
         if (preview) {
           preview.srcObject = cameraStream;
           $("cameraStatus").textContent =
-            "Camera is ON. Your preview is working.";
+            "Camera is ON. Preview is working.";
         } else {
           await stopCamera();
         }
-
       } catch (error) {
         $("cameraStatus").textContent =
           "Camera error: " + error.message +
-          ". Check browser camera and microphone permissions.";
+          ". Check camera and microphone permissions.";
       }
-
     } else {
       $("feature").textContent =
-        feature + " selected. Online services need to be connected next.";
+        feature + " selected. Online service is not connected yet.";
     }
   });
 });
@@ -233,3 +236,4 @@ async function stopCamera() {
 
 </body>
 </html>
+
