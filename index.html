@@ -76,8 +76,57 @@ document.getElementById('feature').textContent=f+' selected. Online services nee
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const auth = getAuth(app)
 </script>
+  
+document.querySelectorAll("[data-feature]").forEach(button => {
+  button.addEventListener("click", async () => {
+    const feature = button.dataset.feature;
+
+    if (feature === "Live Video") {
+      $("feature").innerHTML = `
+        <h3>📹 ROYVO LIVE Studio</h3>
+        <video id="livePreview" autoplay muted playsinline
+          style="width:100%;background:#000;border-radius:12px">
+        </video>
+        <p id="liveStatus">कैमरा शुरू हो रहा है...</p>
+        <button id="startLive">🔴 Start Live</button>
+        <button id="stopCamera">⏹ Stop Camera</button>
+      `;
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true
+        });
+
+        const video = $("livePreview");
+        video.srcObject = stream;
+        $("liveStatus").textContent =
+          "कैमरा चालू है। आप लाइव शुरू करने के लिए तैयार हैं।";
+
+        $("startLive").onclick = () => {
+          $("liveStatus").textContent =
+            "कैमरा चालू है, लेकिन सार्वजनिक लाइव स्ट्रीम के लिए स्ट्रीमिंग सर्वर जोड़ना बाकी है।";
+        };
+
+        $("stopCamera").onclick = () => {
+          stream.getTracks().forEach(track => track.stop());
+          video.srcObject = null;
+          $("liveStatus").textContent = "कैमरा बंद है।";
+        };
+      } catch (error) {
+        $("liveStatus").textContent =
+          "कैमरा नहीं खुला: " + error.message +
+          ". वेबसाइट की Camera और Microphone permission जाँचें।";
+      }
+    } else {
+      $("feature").textContent =
+        feature + " चुना गया है। इस फीचर का सेटअप अभी बाकी है।";
+    }
+  });
+});
+  
   
 </body>
 </html>
