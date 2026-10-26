@@ -1,186 +1,235 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ROYVO LIVE</title>
+
 <style>
-body{margin:0;background:#101020;color:white;font-family:Arial,sans-serif}
-header{text-align:center;padding:24px;background:#20183b}
-h1{color:#c4b5fd}
-main{max-width:500px;margin:auto;padding:16px}
-.card{background:#211f3b;padding:18px;margin:14px 0;border-radius:15px}
-input{box-sizing:border-box;width:100%;padding:12px;margin:7px 0;border-radius:8px;border:0}
-button{padding:13px;margin:5px;border:0;border-radius:9px;background:#8b5cf6;color:white;font-weight:bold}
-.wide{width:100%}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.grid button{min-height:65px}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #101020;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  padding: 22px;
+  background: #20183b;
+}
+
+h1 { color: #c4b5fd; }
+
+main {
+  max-width: 500px;
+  margin: auto;
+  padding: 16px;
+}
+
+.card {
+  background: #211f3b;
+  padding: 18px;
+  margin: 14px 0;
+  border-radius: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 7px 0;
+  border-radius: 8px;
+  border: 0;
+}
+
+button {
+  padding: 13px;
+  margin: 5px 0;
+  border: 0;
+  border-radius: 9px;
+  background: #8b5cf6;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.wide { width: 100%; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.grid button { min-height: 60px; }
+
+video {
+  width: 100%;
+  background: black;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+#status, #cameraStatus {
+  overflow-wrap: anywhere;
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>ROYVO LIVE</h1>
-<p>Connect • Chat • Go Live</p>
+  <h1>ROYVO LIVE</h1>
+  <p>Connect • Chat • Go Live</p>
 </header>
+
 <main>
+
 <section class="card">
-<h2>Create Your Profile</h2>
-<input id="name" placeholder="Your name">
-<input id="email" type="email" placeholder="Your email">
-<button class="wide" onclick="signup()">Continue</button>
-<p id="status">Welcome to ROYVO LIVE!</p>
+  <h2>Create Your Profile</h2>
+  <input id="name" placeholder="Your name">
+  <input id="email" type="email" placeholder="Your email">
+  <button class="wide" id="profileBtn">Continue</button>
+  <p id="status">Welcome to ROYVO LIVE!</p>
 </section>
+
 <section class="card">
-<h2>Your Profile</h2>
-<p id="profile">Guest</p>
+  <h2>Your Profile</h2>
+  <p id="profile">Guest</p>
+  <p id="authStatus">Checking Firebase...</p>
 </section>
+
 <section class="card">
-<h2>Explore</h2>
-<div class="grid">
-<button onclick="show('Live Video')">📹 Live Video</button>
-<button onclick="show('Video Call')">🤳 Video Call</button>
-<button onclick="show('Audio Call')">🎙️ Audio Call</button>
-<button onclick="show('Chat')">💬 Chat</button>
-<button onclick="show('Gifts')">🎁 Gifts</button>
-<button onclick="show('Coins')">🪙 Coins</button>
-</div>
-<p id="feature">Choose a feature above.</p>
+  <h2>Explore</h2>
+
+  <div class="grid">
+    <button data-feature="Live Video">📹 Live Video</button>
+    <button data-feature="Video Call">🤳 Video Call</button>
+    <button data-feature="Audio Call">🎙️ Audio Call</button>
+    <button data-feature="Chat">💬 Chat</button>
+    <button data-feature="Gifts">🎁 Gifts</button>
+    <button data-feature="Coins">🪙 Coins</button>
+  </div>
+
+  <div id="feature">
+    Choose a feature above.
+  </div>
 </section>
+
 </main>
-<script>
-function signup(){
-let n=document.getElementById('name').value.trim();
-let e=document.getElementById('email').value.trim();
-if(!n||!e){document.getElementById('status').textContent='Enter your name and email.';return;}
-document.getElementById('profile').textContent=n;
-document.getElementById('status').textContent='Demo profile created. Real login is not connected yet.';
-}
-function show(f){
-document.getElementById('feature').textContent=f+' selected. Online services need to be connected next.';
-}
-</script>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCQ2OYGMyaTMj96SNln-3mGunKjTmoGDM0",
-    authDomain: "royvo-live-d37de.firebaseapp.com",
-    projectId: "royvo-live-d37de",
-    storageBucket: "royvo-live-d37de.firebasestorage.app",
-    messagingSenderId: "828251158722",
-    appId: "1:828251158722:web:c6605c8ce17dddee04635b",
-    measurementId: "G-LJVY4JLJNS"
-  };
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInAnonymously
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app)
-</script>
-  
+const firebaseConfig = {
+  apiKey: "AIzaSyCQ2OYGMyaTMj96SNln-3mGunKjTmoGDM0",
+  authDomain: "royvo-live-d37de.firebaseapp.com",
+  projectId: "royvo-live-d37de",
+  storageBucket: "royvo-live-d37de.firebasestorage.app",
+  messagingSenderId: "828251158722",
+  appId: "1:828251158722:web:c6605c8ce17dddee04635b",
+  measurementId: "G-LJVY4JLJNS"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const $ = id => document.getElementById(id);
+
+let cameraStream = null;
+
+onAuthStateChanged(auth, user => {
+  $("authStatus").textContent = user
+    ? "Firebase connected. User session active."
+    : "Firebase ready. Sign-in not active.";
+});
+
+$("profileBtn").addEventListener("click", () => {
+  const name = $("name").value.trim();
+  const email = $("email").value.trim();
+
+  if (!name || !email) {
+    $("status").textContent = "Enter your name and email.";
+    return;
+  }
+
+  $("profile").textContent = name;
+  $("status").textContent =
+    "Demo profile created. Email login is not connected.";
+});
+
 document.querySelectorAll("[data-feature]").forEach(button => {
   button.addEventListener("click", async () => {
     const feature = button.dataset.feature;
 
+    await stopCamera();
+
     if (feature === "Live Video") {
       $("feature").innerHTML = `
         <h3>📹 ROYVO LIVE Studio</h3>
-        <video id="livePreview" autoplay muted playsinline
-          style="width:100%;background:#000;border-radius:12px">
-        </video>
-        <p id="liveStatus">कैमरा शुरू हो रहा है...</p>
-        <button id="startLive">🔴 Start Live</button>
+        <video id="livePreview" autoplay muted playsinline></video>
+        <p id="cameraStatus">Waiting for camera permission...</p>
         <button id="stopCamera">⏹ Stop Camera</button>
+        <p>Preview only: public streaming is not connected yet.</p>
       `;
 
+      $("stopCamera").addEventListener("click", stopCamera);
+
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error(
+            "Camera needs HTTPS. Open the published website."
+          );
+        }
+
+        cameraStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true
         });
 
-        const video = $("livePreview");
-        video.srcObject = stream;
-        $("liveStatus").textContent =
-          "कैमरा चालू है। आप लाइव शुरू करने के लिए तैयार हैं।";
+        const preview = $("livePreview");
 
-        $("startLive").onclick = () => {
-          $("liveStatus").textContent =
-            "कैमरा चालू है, लेकिन सार्वजनिक लाइव स्ट्रीम के लिए स्ट्रीमिंग सर्वर जोड़ना बाकी है।";
-        };
+        if (preview) {
+          preview.srcObject = cameraStream;
+          $("cameraStatus").textContent =
+            "Camera is ON. Your preview is working.";
+        } else {
+          await stopCamera();
+        }
 
-        $("stopCamera").onclick = () => {
-          stream.getTracks().forEach(track => track.stop());
-          video.srcObject = null;
-          $("liveStatus").textContent = "कैमरा बंद है।";
-        };
       } catch (error) {
-        $("liveStatus").textContent =
-          "कैमरा नहीं खुला: " + error.message +
-          ". वेबसाइट की Camera और Microphone permission जाँचें।";
+        $("cameraStatus").textContent =
+          "Camera error: " + error.message +
+          ". Check browser camera and microphone permissions.";
       }
+
     } else {
       $("feature").textContent =
-        feature + " चुना गया है। इस फीचर का सेटअप अभी बाकी है।";
+        feature + " selected. Online services need to be connected next.";
     }
   });
 });
-  
-<button id="liveVideoBtn">📹 Live Video</button>
-<video id="cameraPreview" autoplay playsinline muted
-       style="display:none; width:100%; max-width:500px;">
-</video>
-<p id="cameraStatus"></p>
 
-<script>
-const liveBtn = document.getElementById("liveVideoBtn");
-const video = document.getElementById("cameraPreview");
-const status = document.getElementById("cameraStatus");
-
-let cameraStream = null;
-
-liveBtn.addEventListener("click", async () => {
-  try {
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia) {
-      status.textContent =
-        "HTTPS par website kholen aur dobara try karein.";
-      return;
-    }
-
-    cameraStream =
-      await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-      });
-
-    video.srcObject = cameraStream;
-    video.style.display = "block";
-    status.textContent =
-      "Camera chalu hai. Abhi sirf aapka preview hai.";
-    liveBtn.textContent = "⏹ Stop Camera";
-    liveBtn.onclick = stopCamera;
-
-  } catch (error) {
-    status.textContent =
-      "Camera nahi khula: " + error.message;
-  }
-});
-
-function stopCamera() {
+async function stopCamera() {
   if (cameraStream) {
     cameraStream.getTracks().forEach(track => track.stop());
     cameraStream = null;
   }
-  video.srcObject = null;
-  video.style.display = "none";
-  status.textContent = "Camera band hai.";
-  liveBtn.textContent = "📹 Live Video";
-  liveBtn.onclick = null;
+
+  const preview = $("livePreview");
+  if (preview) preview.srcObject = null;
 }
 </script>
-  
-  
+
 </body>
 </html>
