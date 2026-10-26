@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROYVO LIVE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101018;color:white;font-family:Arial,sans-serif}
+header{padding:20px;background:#191923;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+h2{margin:0;color:#ff3d8b}
+button{background:#ff3d8b;color:white;border:0;border-radius:10px;padding:12px;cursor:pointer}
+nav{display:flex;justify-content:space-around;padding:15px;background:#191923;position:fixed;bottom:0;width:100%}
+nav button{background:transparent;padding:8px;font-size:13px}
+main{padding:16px;padding-bottom:90px}
+.story{display:flex;gap:15px;overflow:auto;margin-bottom:22px}
+.circle{min-width:60px;height:60px;border:3px solid #ff3d8b;border-radius:50%;display:grid;place-items:center}
+.card{background:#20202c;border-radius:16px;padding:15px;margin:15px 0}
+.video{height:260px;background:linear-gradient(140deg,#392047,#111827,#a62b68);border-radius:12px;display:grid;place-items:center;font-size:48px}
+input{max-width:100%}
+.small{color:#bbb;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+<h2>ROYVO LIVE</h2>
+<button onclick="document.getElementById('upload').click()">＋ Create</button>
+<input id="upload" type="file" accept="image/*,video/*,audio/*" hidden onchange="addPost(this)">
+</header>
+<main>
+<h3>Discover creators</h3>
+<div class="story">
+<div><div class="circle">👤</div><p class="small">Your story</p></div>
+<div><div class="circle">🎤</div><p class="small">Music</p></div>
+<div><div class="circle">🎬</div><p class="small">Videos</p></div>
+<div><div class="circle">🔴</div><p class="small">Live</p></div>
+</div>
+<h3>Your feed</h3>
+<div id="feed">
+<div class="card">
+<strong>ROYVO LIVE</strong>
+<p class="small">Welcome to your new community!</p>
+<div class="video">▶</div>
+<p>Connect, create and share.</p>
+<button onclick="like(this)">♡ Like 0</button>
+<button onclick="alert('Comments feature coming soon!')">Comment</button>
+</div>
+</div>
+</main>
+<nav>
+<button onclick="window.scrollTo(0,0)">⌂ Home</button>
+<button onclick="alert('Search feature coming soon!')">⌕ Search</button>
+<button onclick="document.getElementById('upload').click()">＋ Create</button>
+<button onclick="alert('Live streaming feature coming soon!')">🔴 Live</button>
+<button onclick="alert('Profile feature coming soon!')">👤 Profile</button>
+</nav>
+<script>
+function like(btn){
+let n=Number(btn.dataset.likes||0);
+n++;
+btn.dataset.likes=n;
+btn.textContent='♥ Like '+n;
+}
+function addPost(input){
+const file=input.files[0];
+if(!file)return;
+const url=URL.createObjectURL(file);
+const card=document.createElement('div');
+card.className='card';
+const media=file.type.startsWith('video/')
+?document.createElement('video')
+:file.type.startsWith('audio/')
+?document.createElement('audio')
+:document.createElement('img');
+media.src=url;
+media.controls=true;
+media.style.width='100%';
+media.style.maxHeight='350px';
+media.style.borderRadius='12px';
+card.innerHTML='<strong>Your new post</strong><p class="small"></p>';
+card.querySelector('p').textContent=file.name;
+card.appendChild(media);
+const btn=document.createElement('button');
+btn.textContent='♡ Like 0';
+btn.onclick=()=>like(btn);
+card.appendChild(btn);
+document.getElementById('feed').prepend(card);
+input.value='';
+}
+</script>
+</body>
+  </html>
+  
