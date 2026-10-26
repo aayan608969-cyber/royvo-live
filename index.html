@@ -127,6 +127,60 @@ document.querySelectorAll("[data-feature]").forEach(button => {
   });
 });
   
+<button id="liveVideoBtn">📹 Live Video</button>
+<video id="cameraPreview" autoplay playsinline muted
+       style="display:none; width:100%; max-width:500px;">
+</video>
+<p id="cameraStatus"></p>
+
+<script>
+const liveBtn = document.getElementById("liveVideoBtn");
+const video = document.getElementById("cameraPreview");
+const status = document.getElementById("cameraStatus");
+
+let cameraStream = null;
+
+liveBtn.addEventListener("click", async () => {
+  try {
+    if (!navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia) {
+      status.textContent =
+        "HTTPS par website kholen aur dobara try karein.";
+      return;
+    }
+
+    cameraStream =
+      await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      });
+
+    video.srcObject = cameraStream;
+    video.style.display = "block";
+    status.textContent =
+      "Camera chalu hai. Abhi sirf aapka preview hai.";
+    liveBtn.textContent = "⏹ Stop Camera";
+    liveBtn.onclick = stopCamera;
+
+  } catch (error) {
+    status.textContent =
+      "Camera nahi khula: " + error.message;
+  }
+});
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+  video.srcObject = null;
+  video.style.display = "none";
+  status.textContent = "Camera band hai.";
+  liveBtn.textContent = "📹 Live Video";
+  liveBtn.onclick = null;
+}
+</script>
+  
   
 </body>
 </html>
